@@ -11,34 +11,39 @@ flowchart TD
     RestaurantDb[(RestaurantDb)]
     MenuDb[(MenuDb)]
     CommentDb[(CommentDb)]
+    client(client)
+    waiter(waiter)
+    admin(admin)
+    client -->|Просмотр меню, Оформить заказ, Вопросы, Жалобы| client-order-api
+    client-order-api <-->|Разместить, оплатить заказ| order-service
+    client-order-api -->|Формирование заказа клиента| ClientOrderDb
+    client-order-api -->|комментарий| comment-service
+    waiter -->|Принять заказ, Вопросы| waiter-order-api
+    waiter-order-api <-->|Назанчить официанта, работа с заказом| order-service
+    waiter-order-api -->|Выход на смену, привязка заказа| restaurant-service
+    admin -->|Управление, Поддержка| admin-order-api
+    admin-order-api <-->|Настройка столиков и официантов| restaurant-service
+    restaurant-service --> RestaurantDb
+    order-service -->|Заказ Requested, In Progress, Declined, Payed| OrderDb
+    menu-service --> MenuDb
+    waiter-order-api -->|Стоимость блюда| menu-service
+    admin-order-api --> menu-service
+    waiter-order-api -->|комментарий| comment-service
+    comment-service --> CommentDb
+```
+
+
+```mermaid
+flowchart TD
+    OrderDb[(OrderDb)]
     
     Debezium{{Debezium}}
     Kafka{{Kafka}}
 
     AnalyticsDb[(AnalyticsDb)]
-
-    client(client)
-    waiter(waiter)
-    admin(admin)
     accountant(accountant)
 
-    client -->|Просмотр меню, Оформить заказ, Вопросы, Жалобы| client-order-api
-    client-order-api <-->|Разместить, оплатить заказ| order-service
-    client-order-api -->|Формирование заказа клиента| ClientOrderDb
-    waiter -->  |Принять заказ, Вопросы| waiter-order-api
-    waiter-order-api <--> |Назанчить официанта, работа с заказом| order-service
-    waiter-order-api --> |Выход на смену, привязка заказа| restaurant-service
-    admin -->  |Управление, Поддержка| admin-order-api
-    admin-order-api <-->|Настройка столиков и официантов| restaurant-service
-    restaurant-service --> RestaurantDb
     order-service --> |Заказ Requested, In Progress, Declined, Payed | OrderDb
-    menu-service --> MenuDb
-    waiter-order-api --> |Стоимость блюда| menu-service
-    admin-order-api --> menu-service
-
-    waiter-order-api --> |комментарий| comment-service
-    client-order-api--> |комментарий| comment-service
-    comment-service --> CommentDb
 
     order-service --> |Оплата заказа| billing-service
     OrderDb --> |Заказ Payed| Debezium
@@ -47,5 +52,4 @@ flowchart TD
     accountant(accountant) --> BI
     BI --> AnalyticsDb
     Kafka --> AnalyticsDb
-
 ```
