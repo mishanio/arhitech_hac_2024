@@ -19,10 +19,9 @@
         Container(auth-service, "Система авторизации")
         Container(billing-service, "Система оплаты")
     }
-    System_Boundary(data, "Слой данных") {
+    System_Boundary(data, "Интеграция") {
         Container(service-bus, "Шина Данных")
     }
-
 
     Rel(client, deliveri-service, "Заказ доставки")
     UpdateRelStyle(client, deliveri-service, $offsetY="-30")
@@ -43,7 +42,7 @@
     UpdateRelStyle(analytics-service, service-bus, $offsetX="10")
     
     UpdateRelStyle(deliveri-service, order-service, $offsetY="-10", $offsetX="-10")
-    UpdateLayoutConfig($c4ShapeInRow="4")
+    UpdateLayoutConfig($c4ShapeInRow="4", $c4BoundaryInRow="2")
 
 
 
